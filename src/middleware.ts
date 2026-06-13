@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_COOKIE } from "@/lib/auth";
 
-const PUBLIC_PATHS = ["/login", "/api/auth/login"];
+const PUBLIC_PATHS = ["/login"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
+    pathname.startsWith("/api/auth/") ||
     PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"))
   ) {
     return NextResponse.next();

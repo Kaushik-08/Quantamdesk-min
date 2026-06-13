@@ -30,8 +30,12 @@ export default function LoginForm() {
 
   useEffect(() => {
     fetch("/api/auth/demo-login")
-      .then((res) => res.json())
-      .then((data) => setDemoConfigured(Boolean(data.configured)))
+      .then(async (res) => {
+        if (!res.ok) return false;
+        const data = await res.json();
+        return Boolean(data.configured);
+      })
+      .then(setDemoConfigured)
       .catch(() => setDemoConfigured(false));
   }, []);
 
@@ -115,11 +119,11 @@ export default function LoginForm() {
 
           {demoConfigured === false && (
             <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-              <p className="font-medium">Local setup required</p>
+              <p className="font-medium">Demo login not configured on the server</p>
               <p className="mt-1 text-amber-800">
-                Add <code className="rounded bg-amber-100 px-1 font-mono text-xs">DEMO_PASSWORD=your-password</code> to
-                your <code className="rounded bg-amber-100 px-1 font-mono text-xs">.env</code> file, then restart{" "}
-                <code className="rounded bg-amber-100 px-1 font-mono text-xs">npm run dev</code>.
+                On Render: open your web service → <strong>Environment</strong> → add{" "}
+                <code className="rounded bg-amber-100 px-1 font-mono text-xs">DEMO_PASSWORD</code> →
+                save and redeploy. Locally: set it in your <code className="rounded bg-amber-100 px-1 font-mono text-xs">.env</code> file.
               </p>
             </div>
           )}
