@@ -30,42 +30,37 @@ export function CustomerLayout({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  const onTickets = pathname === "/customer";
+  const onTicketsList = pathname.startsWith("/customer");
 
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-6 py-4">
-          <button
-            type="button"
-            onClick={() => logout()}
-            className="flex items-center gap-3 rounded-lg text-left transition hover:opacity-80"
-            title="Switch account"
-          >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-              QD
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-slate-900">QuantumDesk Support</p>
-              <p className="text-xs text-slate-500">{user.orgName}</p>
-            </div>
-          </button>
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
+          <div className="flex min-w-0 items-center gap-6">
+            <Link href="/customer" className="flex shrink-0 items-center gap-3 transition hover:opacity-80">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
+                QD
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-sm font-semibold text-slate-900">QuantumDesk Support</p>
+                <p className="text-xs text-slate-500">{user.orgName}</p>
+              </div>
+            </Link>
 
-          <nav className="hidden items-center gap-1 sm:flex">
             <Link
               href="/customer"
               className={cn(
-                "rounded-lg px-4 py-2 text-sm font-medium transition",
-                onTickets ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-100"
+                "rounded-lg px-3 py-2 text-sm font-medium transition",
+                onTicketsList ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-100"
               )}
             >
               My tickets
             </Link>
-          </nav>
+          </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-3 sm:gap-4">
             <LiveIndicator connected />
-            <div className="hidden text-right sm:block">
+            <div className="hidden text-right md:block">
               <p className="text-sm font-medium text-slate-900">{user.name}</p>
               <p className="text-xs text-slate-500">{user.email}</p>
             </div>

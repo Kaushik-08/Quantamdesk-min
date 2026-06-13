@@ -51,11 +51,10 @@ function AgentLayoutInner({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen bg-slate-100">
       <aside className="sticky top-0 flex h-screen w-[17rem] shrink-0 flex-col bg-[var(--qd-navy)] text-white">
         <div className="border-b border-white/10 px-6 py-6">
-          <button
-            type="button"
-            onClick={() => logout()}
-            className="flex w-full items-center gap-3 rounded-lg text-left transition hover:bg-white/5"
-            title="Switch account"
+          <Link
+            href="/agent"
+            className="flex w-full items-center gap-3 rounded-lg transition hover:bg-white/5"
+            title="All tickets"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500 text-sm font-bold">
               QD
@@ -64,7 +63,7 @@ function AgentLayoutInner({ children }: { children: React.ReactNode }) {
               <p className="text-sm font-semibold">QuantumDesk</p>
               <p className="text-xs text-slate-400">Agent Console</p>
             </div>
-          </button>
+          </Link>
           <p className="mt-4 text-xs text-slate-400">{user.orgName}</p>
         </div>
 

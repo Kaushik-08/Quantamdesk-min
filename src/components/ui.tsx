@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 
 export function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    OPEN: "bg-indigo-50 text-indigo-700 ring-indigo-200",
-    PENDING: "bg-slate-100 text-slate-700 ring-slate-200",
-    RESOLVED: "bg-slate-50 text-slate-500 ring-slate-200",
+    OPEN: "bg-emerald-500/15 text-emerald-700 ring-emerald-500/20",
+    PENDING: "bg-amber-500/15 text-amber-700 ring-amber-500/20",
+    RESOLVED: "bg-slate-500/15 text-slate-600 ring-slate-500/20",
   };
   return (
     <span className={cn("inline-flex rounded-md px-2 py-0.5 text-xs font-semibold ring-1 ring-inset", styles[status] ?? styles.OPEN)}>
@@ -16,14 +16,20 @@ export function StatusBadge({ status }: { status: string }) {
 
 export function PriorityBadge({ priority }: { priority: string }) {
   const styles: Record<string, string> = {
-    LOW: "text-slate-400",
-    NORMAL: "text-slate-600",
-    HIGH: "text-slate-800 font-medium",
-    URGENT: "text-indigo-700 font-semibold",
+    LOW: "text-slate-500",
+    NORMAL: "text-blue-600",
+    HIGH: "text-orange-600",
+    URGENT: "text-rose-600 font-semibold",
+  };
+  const icons: Record<string, string> = {
+    LOW: "○",
+    NORMAL: "●",
+    HIGH: "▲",
+    URGENT: "⚠",
   };
   return (
-    <span className={cn("text-xs", styles[priority] ?? styles.NORMAL)}>
-      {priority}
+    <span className={cn("text-xs font-medium", styles[priority] ?? styles.NORMAL)}>
+      {icons[priority]} {priority}
     </span>
   );
 }
@@ -34,20 +40,17 @@ export function TicketRef({ ref_ }: { ref_: string }) {
 
 export function SlaBadge({ minutes }: { minutes: number | null }) {
   if (minutes == null) return <span className="text-xs text-slate-400">—</span>;
-  const urgent = minutes >= 60;
-  const warn = minutes >= 15;
+  let cls = "bg-emerald-50 text-emerald-700 ring-emerald-600/20";
+  let label = `${minutes}m`;
+  if (minutes >= 60) {
+    cls = "bg-rose-50 text-rose-700 ring-rose-600/20";
+    label = `${Math.floor(minutes / 60)}h`;
+  } else if (minutes >= 15) {
+    cls = "bg-amber-50 text-amber-700 ring-amber-600/20";
+  }
   return (
-    <span
-      className={cn(
-        "rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset",
-        urgent
-          ? "bg-indigo-50 text-indigo-700 ring-indigo-200"
-          : warn
-            ? "bg-slate-100 text-slate-700 ring-slate-200"
-            : "bg-slate-50 text-slate-500 ring-slate-200"
-      )}
-    >
-      {minutes >= 60 ? `${Math.floor(minutes / 60)}h` : `${minutes}m`} waiting
+    <span className={cn("rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset", cls)}>
+      {label} waiting
     </span>
   );
 }
@@ -69,6 +72,7 @@ export function LiveIndicator({ connected = true }: { connected?: boolean }) {
 export function StatCard({
   label,
   value,
+  accent,
   href,
   active,
 }: {
@@ -87,8 +91,8 @@ export function StatCard({
         active ? "border-indigo-500 ring-2 ring-indigo-500/20" : "border-slate-200"
       )}
     >
-      <p className="text-sm font-medium text-slate-600">{label}</p>
-      <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">{value}</p>
+      <p className="text-sm font-medium text-slate-500">{label}</p>
+      <p className={cn("mt-2 text-3xl font-bold tracking-tight", accent ?? "text-slate-900")}>{value}</p>
       {active && <p className="mt-1 text-xs font-medium text-indigo-600">Active filter · click to clear</p>}
     </div>
   );
