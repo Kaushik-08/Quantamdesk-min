@@ -4,6 +4,8 @@ A production-minded helpdesk slice for the Quantum Desk take-home: multi-tenant 
 
 Built with **Next.js 15**, **PostgreSQL**, **Prisma**, and **Server-Sent Events (SSE)**.
 
+**Live demo:** deploy free on [Render](https://render.com) — full steps in [DEPLOY.md](./DEPLOY.md).
+
 ---
 
 ## Quick start

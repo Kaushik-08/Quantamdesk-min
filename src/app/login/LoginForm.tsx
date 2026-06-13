@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -26,6 +26,14 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState<string | null>(null);
+  const [demoConfigured, setDemoConfigured] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/demo-login")
+      .then((res) => res.json())
+      .then((data) => setDemoConfigured(Boolean(data.configured)))
+      .catch(() => setDemoConfigured(false));
+  }, []);
 
   const redirectAfterLogin = (role: "AGENT" | "CUSTOMER") => {
     const next = searchParams.get("next");
@@ -104,6 +112,17 @@ export default function LoginForm() {
         <div className="w-full max-w-md">
           <h2 className="text-2xl font-bold text-slate-900">Sign in</h2>
           <p className="mt-2 text-sm text-slate-500">Welcome back. Sign in to your workspace.</p>
+
+          {demoConfigured === false && (
+            <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+              <p className="font-medium">Local setup required</p>
+              <p className="mt-1 text-amber-800">
+                Add <code className="rounded bg-amber-100 px-1 font-mono text-xs">DEMO_PASSWORD=your-password</code> to
+                your <code className="rounded bg-amber-100 px-1 font-mono text-xs">.env</code> file, then restart{" "}
+                <code className="rounded bg-amber-100 px-1 font-mono text-xs">npm run dev</code>.
+              </p>
+            </div>
+          )}
 
           <form onSubmit={handleLogin} className="mt-8 space-y-4">
             <div>
