@@ -16,7 +16,7 @@ export type AiBullet = {
 
 export type AiResult = {
   source: "openai" | "demo";
-  action: "summarize" | "suggest-reply";
+  action: "summarize" | "suggest-reply" | "customer-insight";
   bullets?: AiBullet[];
   message?: string;
 };
