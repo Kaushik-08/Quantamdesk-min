@@ -63,6 +63,15 @@ export default function AgentTicketPage({ params }: PageProps) {
     if (ticketId) loadTicket();
   }, [ticketId, loadTicket]);
 
+  const loadEvents = useCallback(async () => {
+    if (!ticketId) return;
+    const eventsRes = await fetch(`/api/tickets/${ticketId}/events`);
+    if (eventsRes.ok) {
+      const eventsData = await eventsRes.json();
+      setEvents(eventsData.events);
+    }
+  }, [ticketId]);
+
   useRealtime(ticketId, {
     onMessage: (data) => {
       if (data.ticketId !== ticketId) return;
@@ -70,6 +79,7 @@ export default function AgentTicketPage({ params }: PageProps) {
         if (prev.some((m) => m.id === data.message.id)) return prev;
         return [...prev, data.message];
       });
+      loadEvents();
     },
     onTicketUpdate: (data) => {
       if (data.ticketId !== ticketId) return;
@@ -78,6 +88,7 @@ export default function AgentTicketPage({ params }: PageProps) {
           ? { ...prev, status: data.ticket.status, assignedTo: data.ticket.assignedTo, assigneeName: data.ticket.assigneeName, updatedAt: data.ticket.updatedAt }
           : prev
       );
+      loadEvents();
     },
   });
 
@@ -140,7 +151,7 @@ export default function AgentTicketPage({ params }: PageProps) {
                   {s}
                 </button>
               ))}
-              <button onClick={assignToMe} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700">
+              <button onClick={assignToMe} className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700">
                 Assign to me
               </button>
             </div>

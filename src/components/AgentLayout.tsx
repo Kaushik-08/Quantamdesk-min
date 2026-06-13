@@ -1,23 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { LiveIndicator } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/agent", label: "Inbox", icon: "📥" },
-  { href: "/agent?view=mine", label: "My tickets", icon: "👤" },
-  { href: "/agent?view=unassigned", label: "Unassigned", icon: "📋" },
+  { href: "/agent", label: "Inbox", match: "inbox" as const },
+  { href: "/agent?view=mine", label: "My tickets", match: "mine" as const },
+  { href: "/agent?view=unassigned", label: "Unassigned", match: "unassigned" as const },
 ];
 
-export function AgentLayout({ children }: { children: React.ReactNode }) {
+function AgentLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { user, logout, loading } = useAuth();
+
+  const view = searchParams.get("view");
+  const hasFilter = Boolean(searchParams.get("status") || searchParams.get("sla"));
 
   useEffect(() => {
     if (!loading && (!user || user.role !== "AGENT")) {
@@ -25,10 +28,17 @@ export function AgentLayout({ children }: { children: React.ReactNode }) {
     }
   }, [loading, user, router]);
 
+  const isActive = (match: "inbox" | "mine" | "unassigned") => {
+    if (pathname !== "/agent") return false;
+    if (match === "inbox") return !view && !hasFilter;
+    if (match === "mine") return view === "mine";
+    return view === "unassigned";
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-100">
-        <p className="text-slate-500">Loading workspace…</p>
+        <p className="text-slate-600">Loading workspace…</p>
       </div>
     );
   }
@@ -39,48 +49,46 @@ export function AgentLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-slate-100">
-      <aside className="sticky top-0 flex h-screen w-64 shrink-0 flex-col bg-[var(--qd-navy)] text-white">
-        <div className="border-b border-white/10 px-5 py-5">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500 text-sm font-bold">
+      <aside className="sticky top-0 flex h-screen w-[17rem] shrink-0 flex-col bg-[var(--qd-navy)] text-white">
+        <div className="border-b border-white/10 px-6 py-6">
+          <button
+            type="button"
+            onClick={() => logout()}
+            className="flex w-full items-center gap-3 rounded-lg text-left transition hover:bg-white/5"
+            title="Switch account"
+          >
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500 text-sm font-bold">
               QD
             </div>
             <div>
               <p className="text-sm font-semibold">QuantumDesk</p>
               <p className="text-xs text-slate-400">Agent Console</p>
             </div>
-          </div>
-          <p className="mt-3 text-xs text-slate-400">{user.orgName}</p>
+          </button>
+          <p className="mt-4 text-xs text-slate-400">{user.orgName}</p>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-4">
-          {NAV.map((item) => {
-            const active = pathname === "/agent" && item.href === "/agent" ? pathname === "/agent" : pathname.startsWith(item.href.split("?")[0]) && item.href !== "/agent";
-            const isInbox = item.href === "/agent";
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition",
-                  (isInbox && pathname === "/agent") || active
-                    ? "bg-white/10 text-white"
-                    : "text-slate-400 hover:bg-white/5 hover:text-white"
-                )}
-              >
-                <span>{item.icon}</span>
-                {item.label}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 space-y-1.5 px-4 py-6">
+          {NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center rounded-lg px-4 py-3 text-sm font-medium transition",
+                isActive(item.match)
+                  ? "bg-indigo-500 text-white shadow-sm"
+                  : "text-slate-400 hover:bg-white/5 hover:text-white"
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
-        <div className="border-t border-white/10 p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <LiveIndicator connected />
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500 text-sm font-medium">
+        <div className="border-t border-white/10 px-4 py-5">
+          <LiveIndicator connected />
+          <div className="mt-4 flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500/80 text-sm font-medium">
               {user.name.charAt(0)}
             </div>
             <div className="min-w-0 flex-1">
@@ -90,7 +98,7 @@ export function AgentLayout({ children }: { children: React.ReactNode }) {
           </div>
           <button
             onClick={() => logout()}
-            className="mt-3 w-full rounded-lg bg-white/10 px-3 py-2 text-xs text-slate-300 transition hover:bg-white/20"
+            className="mt-4 w-full rounded-lg bg-white/10 px-3 py-2.5 text-xs text-slate-300 transition hover:bg-white/20"
           >
             Sign out
           </button>
@@ -98,12 +106,26 @@ export function AgentLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="border-b border-slate-200 bg-white px-8 py-4">
+        <header className="border-b border-slate-200 bg-white px-8 py-5">
           <h1 className="text-lg font-semibold text-slate-900">Support Inbox</h1>
-          <p className="text-sm text-slate-500">Manage conversations across {user.orgName}</p>
+          <p className="mt-0.5 text-sm text-slate-600">Manage conversations across {user.orgName}</p>
         </header>
         <main className="flex-1 overflow-y-auto p-8">{children}</main>
       </div>
     </div>
+  );
+}
+
+export function AgentLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-slate-100">
+          <p className="text-slate-600">Loading…</p>
+        </div>
+      }
+    >
+      <AgentLayoutInner>{children}</AgentLayoutInner>
+    </Suspense>
   );
 }
