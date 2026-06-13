@@ -238,9 +238,9 @@ async function main() {
 
   console.log("\n✓ QuantumDesk seed complete\n");
   console.log("Organization: Acme Corp (acme)");
-  console.log("\nAgent accounts (password: demo123):");
+  console.log("\nAgent accounts (use DEMO_PASSWORD from .env):");
   AGENTS.forEach((a) => console.log(`  ${a.email}`));
-  console.log("\nCustomer accounts (password: demo123):");
+  console.log("\nCustomer accounts (use DEMO_PASSWORD from .env):");
   CUSTOMERS.forEach((c) => console.log(`  ${c.email}`));
   console.log(`\nTickets: ${TICKETS.length} realistic conversations loaded\n`);
 }

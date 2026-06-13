@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
-const DEMO_PASSWORD = "demo123";
-
 const DEMO_ACCOUNTS = {
   agents: [
     { email: "alex.chen@quantumdesk.io", name: "Alex Chen" },
@@ -24,7 +22,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("demo123");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -51,7 +49,6 @@ export default function LoginForm() {
 
   const quickLogin = (accountEmail: string) => {
     setEmail(accountEmail);
-    setPassword(DEMO_PASSWORD);
   };
 
   return (
@@ -83,8 +80,9 @@ export default function LoginForm() {
         <div className="w-full max-w-md">
           <h2 className="text-2xl font-bold text-slate-900">Sign in</h2>
           <p className="mt-2 text-sm text-slate-500">
-            Demo password for all accounts:{" "}
-            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-indigo-600">demo123</code>
+            Use a seed account email below. Password is configured locally via{" "}
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-700">DEMO_PASSWORD</code>{" "}
+            in your <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-700">.env</code> file.
           </p>
 
           <form onSubmit={handleLogin} className="mt-8 space-y-4">

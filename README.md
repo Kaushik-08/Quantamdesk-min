@@ -18,7 +18,7 @@ Built with **Next.js 15**, **PostgreSQL**, **Prisma**, and **Server-Sent Events 
 ```bash
 git clone <your-repo-url>
 cd quantumdesk-mini
-cp .env.example .env          # edit locally — never commit .env
+cp .env.example .env          # then set DEMO_PASSWORD in .env (local only)
 npm install
 docker compose up -d          # Postgres on port 5433
 npm run db:migrate
@@ -32,7 +32,7 @@ Open [http://localhost:3000](http://localhost:3000) → login page.
 
 ### Demo accounts
 
-Password for all seed users: **`demo123`** (override via `DEMO_PASSWORD` in `.env`).
+Use any seed email below to sign in. The password is **`DEMO_PASSWORD`** from your local `.env` file (set after `cp .env.example .env`) — it is **not** stored in this repository.
 
 | Role | Email | Name |
 |------|-------|------|
@@ -78,9 +78,13 @@ All endpoints require a valid session cookie (`qd_session`) unless noted. Unauth
 | `POST` | `/api/auth/logout` | Clear session | Session |
 | `GET` | `/api/auth/me` | Current user profile | Session |
 
-**Login body:**
+**Login body** (`POST /api/auth/login`):
+
 ```json
-{ "email": "alex.chen@quantumdesk.io", "password": "demo123" }
+{
+  "email": "alex.chen@quantumdesk.io",
+  "password": "<your DEMO_PASSWORD from local .env>"
+}
 ```
 
 ### Tickets
@@ -141,7 +145,7 @@ All endpoints require a valid session cookie (`qd_session`) unless noted. Unauth
 | `DATABASE_URL` | Server | ❌ `.env` only | Local Docker credentials in `.env.example` are demo-only |
 | `OPENAI_API_KEY` | Server | ❌ Never | Optional AI — set locally in `.env` |
 | `OPENAI_MODEL` | Server | ❌ Never | Defaults to `gpt-4o-mini` |
-| `DEMO_PASSWORD` | Server | ✅ Example in `.env.example` | Demo auth only — replace in production |
+| `DEMO_PASSWORD` | Server | ❌ `.env` only | Local demo login — set after copying `.env.example` |
 | `NEXT_PUBLIC_APP_URL` | Client | ✅ Safe | Public app URL, no secrets |
 
 **Rules enforced in this repo:**

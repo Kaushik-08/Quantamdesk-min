@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 
 export const SESSION_COOKIE = "qd_session";
-export const DEMO_PASSWORD = process.env.DEMO_PASSWORD ?? "demo123";
 
 export type SessionUser = {
   id: string;
@@ -34,5 +33,11 @@ export async function clearSession(): Promise<void> {
 }
 
 export function verifyDemoPassword(password: string): boolean {
-  return password === DEMO_PASSWORD;
+  const demoPassword = process.env.DEMO_PASSWORD;
+  if (!demoPassword) return false;
+  return password === demoPassword;
+}
+
+export function isDemoPasswordConfigured(): boolean {
+  return Boolean(process.env.DEMO_PASSWORD);
 }

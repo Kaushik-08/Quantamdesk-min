@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { setSessionUserId, verifyDemoPassword } from "@/lib/auth";
+import { setSessionUserId, verifyDemoPassword, isDemoPasswordConfigured } from "@/lib/auth";
 import { jsonError } from "@/lib/api-helpers";
 import { z } from "zod";
 
@@ -18,6 +18,10 @@ export async function POST(request: Request) {
   }
 
   const { email, password } = parsed.data;
+
+  if (!isDemoPasswordConfigured()) {
+    return jsonError("Demo login is not configured — set DEMO_PASSWORD in .env", 503);
+  }
 
   if (!verifyDemoPassword(password)) {
     return jsonError("Invalid email or password", 401);
