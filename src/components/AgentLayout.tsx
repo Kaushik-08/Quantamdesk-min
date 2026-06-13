@@ -85,13 +85,15 @@ function AgentLayoutInner({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="border-t border-white/10 px-4 py-5">
-          <LiveIndicator connected />
-          <div className="mt-4 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500/80 text-sm font-medium">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-500/80 text-sm font-medium">
               {user.name.charAt(0)}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{user.name}</p>
+              <div className="flex items-center gap-2">
+                <p className="truncate text-sm font-medium">{user.name}</p>
+                <LiveIndicator connected variant="dark" />
+              </div>
               <p className="truncate text-xs text-slate-400">{user.email}</p>
             </div>
           </div>

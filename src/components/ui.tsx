@@ -55,15 +55,23 @@ export function SlaBadge({ minutes }: { minutes: number | null }) {
   );
 }
 
-export function LiveIndicator({ connected = true }: { connected?: boolean }) {
+export function LiveIndicator({
+  connected = true,
+  variant = "light",
+}: {
+  connected?: boolean;
+  variant?: "light" | "dark";
+}) {
+  const textClass = variant === "dark" ? "text-slate-400" : "text-slate-500";
+  const dotClass = connected
+    ? variant === "dark"
+      ? "bg-emerald-400"
+      : "bg-emerald-500"
+    : "bg-slate-400";
+
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs text-slate-400">
-      <span
-        className={cn(
-          "h-2 w-2 rounded-full",
-          connected ? "bg-indigo-400 animate-pulse-dot" : "bg-slate-500"
-        )}
-      />
+    <span className={cn("inline-flex shrink-0 items-center gap-1.5 text-[11px] font-medium leading-none", textClass)}>
+      <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", dotClass, connected && "animate-pulse-dot")} />
       {connected ? "Live" : "Reconnecting…"}
     </span>
   );

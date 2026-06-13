@@ -43,10 +43,15 @@ export function CustomerLayout({ children }: { children: React.ReactNode }) {
           </Link>
 
           <div className="flex shrink-0 items-center gap-3 sm:gap-4">
-            <LiveIndicator connected />
             <div className="hidden text-right md:block">
-              <p className="text-sm font-medium text-slate-900">{user.name}</p>
-              <p className="text-xs text-slate-500">{user.email}</p>
+              <div className="flex items-center justify-end gap-2">
+                <p className="text-sm font-medium text-slate-900">{user.name}</p>
+                <LiveIndicator connected variant="light" />
+              </div>
+              <p className="mt-0.5 text-xs text-slate-500">{user.email}</p>
+            </div>
+            <div className="md:hidden">
+              <LiveIndicator connected variant="light" />
             </div>
             <button
               onClick={() => logout()}
