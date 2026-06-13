@@ -107,10 +107,6 @@ function AgentLayoutInner({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="border-b border-slate-200 bg-white px-8 py-5">
-          <h1 className="text-lg font-semibold text-slate-900">Support Inbox</h1>
-          <p className="mt-0.5 text-sm text-slate-600">Manage conversations across {user.orgName}</p>
-        </header>
         <main className="flex-1 overflow-y-auto p-8">{children}</main>
       </div>
     </div>
