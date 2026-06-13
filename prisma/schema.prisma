@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  AGENT
+}
+
+enum TicketStatus {
+  OPEN
+  PENDING
+  RESOLVED
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum TicketEventType {
+  CREATED
+  STATUS_CHANGED
+  ASSIGNED
+  UNASSIGNED
+  MESSAGE_POSTED
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users   User[]
+  tickets Ticket[]
+
+  @@map("organizations")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  orgId     String   @map("org_id")
+  email     String   @unique
+  name      String
+  role      UserRole
+  avatarUrl String?  @map("avatar_url")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  organization    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  createdTickets  Ticket[]     @relation("TicketCreator")
+  assignedTickets Ticket[]     @relation("TicketAssignee")
+  messages        Message[]
+  ticketEvents    TicketEvent[]
+
+  @@index([orgId, role])
+  @@map("users")
+}
+
+model Ticket {
+  id           String         @id @default(cuid())
+  orgId        String         @map("org_id")
+  ticketNumber Int            @map("ticket_number")
+  title        String
+  description  String?
+  priority     TicketPriority @default(NORMAL)
+  status       TicketStatus   @default(OPEN)
+  createdBy    String         @map("created_by")
+  assignedTo   String?        @map("assigned_to")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  organization Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  creator      User          @relation("TicketCreator", fields: [createdBy], references: [id])
+  assignee     User?         @relation("TicketAssignee", fields: [assignedTo], references: [id])
+  messages     Message[]
+  events       TicketEvent[]
+
+  @@unique([orgId, ticketNumber])
+  @@index([orgId, status, updatedAt(sort: Desc)])
+  @@index([createdBy, updatedAt(sort: Desc)])
+  @@index([assignedTo])
+  @@index([status, updatedAt(sort: Desc)])
+  @@index([priority])
+  @@map("tickets")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  ticketId  String   @map("ticket_id")
+  authorId  String   @map("author_id")
+  body      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  author User   @relation(fields: [authorId], references: [id])
+
+  @@index([ticketId, createdAt(sort: Asc)])
+  @@map("messages")
+}
+
+model TicketEvent {
+  id        String          @id @default(cuid())
+  ticketId  String          @map("ticket_id")
+  actorId   String?         @map("actor_id")
+  type      TicketEventType
+  payload   Json?
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  actor  User?  @relation(fields: [actorId], references: [id])
+
+  @@index([ticketId, createdAt(sort: Desc)])
+  @@map("ticket_events")
+}
