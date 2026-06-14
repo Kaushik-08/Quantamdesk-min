@@ -127,6 +127,3 @@ Production path:
 4. Denormalized inbox columns for SLA without extra queries
 5. Webhook integrations (Slack notify on unassigned OPEN tickets)
 
----
-
-*~1 page. Written as part of the Quantum Desk take-home submission.*
