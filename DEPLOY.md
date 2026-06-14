@@ -108,31 +108,3 @@ From your machine:
 DATABASE_URL="your-neon-url" npx prisma migrate deploy
 DATABASE_URL="your-neon-url" npm run db:seed
 ```
-
-Or use Neon SQL console / Vercel CLI.
-
----
-
-## Troubleshooting
-
-| Issue | Fix |
-|-------|-----|
-| Build fails on `prisma migrate` | Check `DATABASE_URL` is set before build on Render |
-| Login: “Demo login not configured” | Set `DEMO_PASSWORD` in host env vars, redeploy |
-| Real-time not updating | Prefer **Render** over Vercel; refresh both browser windows |
-| Slow first load | Free Render tier spun down — wait ~60s |
-| OpenAI errors | Set `AI_MODE=demo` — no API key needed |
-
----
-
-## What to send interviewers
-
-```
-Live demo: https://YOUR-SERVICE.onrender.com
-GitHub:    https://github.com/Kaushik-08/Quantamdesk-min
-Demo login password: (sent separately)
-Agent: alex.chen@quantumdesk.io
-Customer: sam.ortiz@acmecorp.com
-```
-
-Video + repo link + live URL = strong submission.
