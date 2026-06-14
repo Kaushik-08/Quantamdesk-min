@@ -263,26 +263,6 @@ See [DESIGN.md](./DESIGN.md) for full scaling notes.
 
 ---
 
-## Submission checklist
-
-Before pushing to GitHub:
-
-- [ ] Run `npm run security:check` — must pass
-- [ ] Confirm `.env` is **not** in `git status`
-- [ ] Rotate any API keys that were ever pasted into chat or committed by mistake
-- [ ] Record ~5–8 min demo video (login → create ticket → live reply → filters/SLA)
-- [ ] Push repo link + video to Quantum Desk
-
-### Demo video script
-
-1. Login as agent → inbox stats, SLA badges, filters
-2. Open ticket → assign, change status, AI summarize
-3. Second window: customer → create ticket, AI assistant
-4. Customer sends message → agent sees it live
-5. Mention: Prisma migrations, SSE, tenant isolation, audit trail, security check
-
----
-
 ## License
 
 MIT — built as a take-home submission for Quantum Desk.
