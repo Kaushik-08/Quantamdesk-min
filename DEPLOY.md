@@ -1,4 +1,4 @@
-# Deploy QuantumDesk Mini (free)
+# Deploy QuantumDesk
 
 Live demo for interviewers: **Next.js + PostgreSQL + SSE real-time**.
 
